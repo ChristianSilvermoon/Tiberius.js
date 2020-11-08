@@ -146,7 +146,7 @@ Derpi.search("faved_by:USER").then(
 ```
 
 ### `post(id)`
-Returns JSON Data for a specific post. (ex: https://derpibooru.org/0.json)
+Returns JSON Data for a specific post. (ex: https://derpibooru.org/api/v1/json/images/0)
 
 **Examples**
 ```JavaScript
@@ -169,7 +169,7 @@ Derpi.postOembed(0).then(
 ```
 
 ### `lists()`
-Returns post lists (ex: https://derpibooru.org/lists.json)
+Returns post lists (ex: https://derpibooru.org/api/v1/json/lists)
 
 **Examples**
 ```javascript
