@@ -85,8 +85,4 @@ export default class {
 
 		return fetchPromise(url);
 	}
-
-	lists() {
-		return fetchPromise(`${this.domain}/api/v${this._apiVer}/json/lists`);
-	}
 }

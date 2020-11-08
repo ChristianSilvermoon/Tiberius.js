@@ -167,15 +167,3 @@ Derpi.postOembed(0).then(
 	}
 )
 ```
-
-### `lists()`
-Returns post lists (ex: https://derpibooru.org/api/v1/json/lists)
-
-**Examples**
-```javascript
-Derpi.lists().then(
-	listJSON => {
-		console.log(listJSON);
-	}
-)
-```
