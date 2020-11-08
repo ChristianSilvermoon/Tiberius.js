@@ -33,7 +33,7 @@ function fetchPromise( url ) {
 export default class {
 	constructor(apiKey = null) {
 		this._filter	= FILTERS.DEFAULT;
-		this.domain	= "https://derpibooru.org"'
+		this.domain	= "https://derpibooru.org"
 		this._apiVer	= "1";
 	}
 
