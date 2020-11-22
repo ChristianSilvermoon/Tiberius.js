@@ -167,3 +167,14 @@ Derpi.postOembed(0).then(
 	}
 )
 ```
+
+### getFeatured()
+Gets the **Featured Image**
+
+```javaScript
+Derpi.getFeatured().then(
+	postJSON => {
+		console.log(postJSON);
+	}
+)
+```

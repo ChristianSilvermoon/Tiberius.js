@@ -85,4 +85,8 @@ export default class {
 
 		return fetchPromise(url);
 	}
+
+	getFeatured() {
+		return fetchPromise(`${this.domain}/api/v${this._apiVer}/json/images/featured`);
+	}
 }
