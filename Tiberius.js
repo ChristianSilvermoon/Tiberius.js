@@ -3,23 +3,6 @@
 // GitHub: https://github.com/ChristianSilvermoon/Tiberius.js
 // License: WTFPL v2
 
-const FILTERS = {
-	"DEFAULT"	: "100073",	//https://derpibooru.org/filters/100073
-	"EVERYTHING"	: "56027",	//https://derpibooru.org/filters/56027
-	"18+DARK"	: "37429",	//https://derpibooru.org/filters/37429
-	"MAXSPOILERS"	: "37430",	//https://derpibooru.org/filters/37430
-	"LEGACYDEFAULT"	: "37431",	//https://derpibooru.org/filters/37431
-	"18+R34"	: "37432"	//https://derpibooru.org/filters/37432
-}
-
-function resolveFilter(id) {
-	if ( FILTERS[id] ) {
-		return FILTERS[id]; //set Filter using a preset name
-	} else {
-		return id;
-	}
-}
-
 function fetchPromise( url ) {
 	return new Promise( (resolve, reject) => {
 		fetch( url ).then( response => {
@@ -31,10 +14,17 @@ function fetchPromise( url ) {
 }
 
 export default class {
-	constructor(apiKey = null) {
-		this._filter	= FILTERS.DEFAULT;
-		this.domain	= "https://derpibooru.org"
+	constructor(domain, filter = "default") {
+		//error checking
+		if ( !domain || typeof(domain) != "string") { throw("Malformed Tiberius Constructor: Invalid or Missing Domain") }
+
+		//Initial Values
+		this._filter	= 0; //Initialized to 0
+		this.domain	= domain;
 		this._apiVer	= "1";
+		this._cache	= {};
+
+		this.filter = "default"; // Attempt to request Default Filter from server.
 	}
 
 	get filter() {
@@ -42,7 +32,32 @@ export default class {
 	}
 
 	set filter(id) {
-		this._filter = resolveFilter(id);
+		if ( typeof(id) == "string" ) {
+			//If passed a string, try to match against a system filter.
+			this.getSystemFilters().then( r => {
+				let filterChanged = false;
+				r.filters.forEach( filter => {
+					if ( filter.name.toLowerCase() == id.toLowerCase() ) {
+						if ( this._filter == filter.id ) {
+							//Warn against bad practice
+							console.warn("Tiberius Filter Setter: Target server's response matches current filter ID. \n\nUnless you know what you're doing, please avoid setting the filter to the current filter via strings. This makes unnecessary API requests to the target server.")
+						}
+						this._filter = filter.id;
+						this._cache.filterInfo = filter;
+						filterChanged = true;
+					}
+				})
+				
+				if ( ! filterChanged ) {
+					//Throw an error if the filter doesn't exist.
+					console.warn(`Tiberius Filter Setter: Filter "${id}" does not exist; filter unchanged.`)
+				}
+			})
+			
+		} else if (typeof(id) == "number") {
+			this._filter = id;
+			this._cache.filterInfo = null;
+		}
 	}
 
 	search(query, extraParams = {}) {
@@ -88,5 +103,9 @@ export default class {
 
 	getFeatured() {
 		return fetchPromise(`${this.domain}/api/v${this._apiVer}/json/images/featured`);
+	}
+
+	getSystemFilters() {
+		return fetchPromise(`${this.domain}/api/v${this._apiVer}/json/filters/system`);
 	}
 }

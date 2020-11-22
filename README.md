@@ -13,11 +13,24 @@ Note: The majority of shown examples will reference Derpibooru.org for simplicit
 ```JavaScript
 import Tiberius from "./Tiberius.js"; //Import Class
 
-const TiberiusInstance = new Tiberius;
+// Tiberius' constructor can be used in multiple ways! Choose which best fits your use case.
+
+// First parameter is required and is a string for the domain.
+const TiberiusInstance = new Tiberius("https://derpibooru.org");
+// In this instance, Tiberius attempts to ask Philomena for a system filter named "default"
+
+//or initialize with a specific filter via numeric ID:
+const TiberiusInstance = new Tiberius("https//derpibooru.org", 37430);
+// In this instance, Tiberius uses the numeric value directly, and does NOT ask Philomena to identify it.
+
+//or intialize with a specific System Filter via Name:
+const TiberiusInstance = new Tiberius("https://derpibooru.org", "Maximum Spoilers");
+// In this instance, Tiberius attempts to ask Philomena for a system filter named "maximum spoilers"
+
 ```
 **An important note:** Most methods return ***promises***, so please expect this!
 
-The target domain defaults to `https://derpibooru.org`
+Tiberius was originally built for Derpibooru's implementation of Philomena.
 
 If you are attempting to use Tiberius with different target domain, please keep this in mind!
 
@@ -29,7 +42,6 @@ For Derpibooru's API reference, see https://derpibooru.org/pages/api
 
 ### `domain`
 Change the target domain.
-It's `https://derpibooru.org` by default.
 
 To change, do
 ```JavaScript
@@ -46,42 +58,26 @@ Example
 ```JavaScript
 import Tiberius from "./Tiberius.js"
 
-Derpi = new Tiberius; //Derpibooru
-Furb = new Tiberius; //Furbooru
-
-Furb.domain = "https://furbooru.org"
+Derpi = new Tiberius("https://derpibooru.org"); //Derpibooru
+Furb = new Tiberius("https://furbooru.org"); //Furbooru
 ```
 
 ## Setters / Getters
 
 ### `filter`
-Returns or sets the filter ID (numerical only).
 
-When setting filters, you can use Derpibooru's aliases for the default filters in place of numerical IDs.
+#### Getting
+Returns the numerical ID of the currently selected filter.
 
-Remember, that these aliases apply **ONLY TO DERPIBOORU**, while you *can* use them with other websites they may use different IDs for their filters! For best practice do **NOT** use these aliases when not using Derpibooru, supply their proper numeric ID instead!
+#### Setting
+When setting the filter, you can use a Numerical ID or the name of a **System Filter**
 
-This also means you may need to **Change The Default Filter**  when using sites other than Derpibooru for correct functionality.
+When setting the value to a string, Tiberius will request the **System Filters** from the target domain's API and set the Numerical Filter ID to the filter that matches your string.
 
-**Examples**
-```JavaScript
-Derpi.filter; //Returns 100073 if unmodified
-Derpi.filter = 1234; //Sets filter ID to 1234
-Derpi.filter = EVERYTHING; //Sets filter ID to 56027
-```
+Tiberius compares these values in a **case insensitive manner** so "Default" is the same as "default"
 
-**Filter Aliases (Setting Only)**
+This setter is also called from the constructor.
 
-Alias           | ID (Click to view on Derpibooru)                
---------------- | ------------------------------------------------
-DEFAULT         | [100073](https://derpibooru.org/filters/100073)
-EVERYTHING      | [56027](https://derpibooru.org/filters/56027)
-18+DARK         | [37429](https://derpibooru.org/filters/37429)
-MAXSPOILERS 	| [37430](https://derpibooru.org/filters/37430)
-LEGACYDEFAULT   | [37431](https://derpibooru.org/filters/37431)
-18+R34          | [37432](https://derpibooru.org/filters/37432)
-
-***IMPORTANT: Only use these with Derpibooru or one of it's alternate domains***
 
 ## Methods
 
@@ -175,6 +171,17 @@ Gets the **Featured Image**
 Derpi.getFeatured().then(
 	postJSON => {
 		console.log(postJSON);
+	}
+)
+```
+
+### getSystemFilters()
+Gets the system filters.
+
+```javaScript
+Derpi.getSystemFilters().then(
+	filterListJSON => {
+		console.log(filterListJSON);
 	}
 )
 ```
