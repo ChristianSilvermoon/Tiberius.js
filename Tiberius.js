@@ -21,7 +21,6 @@ export default class {
 		//Initial Values
 		this._filter	= 0; //Initialized to 0
 		this.domain	= domain;
-		this._apiVer	= "1";
 		this._cache	= {};
 
 		this.filter = "default"; // Attempt to request Default Filter from server.
@@ -68,7 +67,7 @@ export default class {
 		const page		= extraParams.page? extraParams.page : 1;
 		const sQuery		= encodeURIComponent(query);
 
-		const searchURL		= `${this.domain}/api/v${this._apiVer}/json/search?` +
+		const searchURL		= `${this.domain}/api/v1/json/search?` +
 			`q=${sQuery}` +
 			`&filter_id=${filter}` +
 			`&sd=${sortDir}` +
@@ -85,11 +84,11 @@ export default class {
 	}
 
 	post(id) {
-		return fetchPromise(`${this.domain}/api/v${this._apiVer}/json/images/${id}`);
+		return fetchPromise(`${this.domain}/api/v1/json/images/${id}`);
 	}
 
 	postOmbed(id, extraParams = {}) {
-		let url = `${this.domain}/api/v${this._apiVer}/json/oembed?url=${this.domain}/images/${id}`;
+		let url = `${this.domain}/api/v1/json/oembed?url=${this.domain}/images/${id}`;
 		if ( extraParams.maxWidth ) {
 			url += `&maxwidth=${extraParams.maxWidth}`;
 		}
@@ -102,10 +101,10 @@ export default class {
 	}
 
 	getFeatured() {
-		return fetchPromise(`${this.domain}/api/v${this._apiVer}/json/images/featured`);
+		return fetchPromise(`${this.domain}/api/v1/json/images/featured`);
 	}
 
 	getSystemFilters() {
-		return fetchPromise(`${this.domain}/api/v${this._apiVer}/json/filters/system`);
+		return fetchPromise(`${this.domain}/api/v1/json/filters/system`);
 	}
 }
