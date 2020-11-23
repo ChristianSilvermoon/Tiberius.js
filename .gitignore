@@ -1,1 +1,6 @@
+# Editor Files
 *.swp
+
+# Local Testing Files
+test_page.html
+test.js
